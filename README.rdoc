@@ -1,3 +1,5 @@
-= Hello
-== World
-<b>hello</b> world
+== Description
+Easy to use jQuery plugin for zoom & pan image cropping.
+
+== Demo
+Visit: http://www.tmatthew.net//jwindowcrop
