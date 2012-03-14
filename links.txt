@@ -1,0 +1,2 @@
+Check if image is loaded:
+http://stackoverflow.com/questions/1977871/check-if-an-image-is-loaded-no-errors-in-javascript
