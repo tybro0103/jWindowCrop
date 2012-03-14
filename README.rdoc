@@ -5,6 +5,7 @@ Easy to use jQuery plugin for zoom & pan image cropping.
 Visit: http://www.tmatthew.net/jwindowcrop
 
 == Usage
+<tt>
 <img class="crop_me" src="http://placekitten.com/800/600" />
 
 <script>
@@ -15,3 +16,4 @@ Visit: http://www.tmatthew.net/jwindowcrop
 		});
 	});
 </script>
+</tt>
