@@ -63,7 +63,9 @@ Options
 Advanced
 ========
 The structure for this plugin comes from http://starter.pixelgraphics.us/. An object is created for each dom element this is initialized on. A reverse refernce to that object can be accessed like so:
+
 	var jwc = $('img#beach').getjWindowCrop();
+
 You then have access to all the properties and methods used for that specific element.
 
 Questions
