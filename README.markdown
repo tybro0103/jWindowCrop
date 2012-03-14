@@ -14,7 +14,11 @@ Usage
 		$(function() {
 			$('.crop_me').jWindowCrop({
 				targetWidth:300,
-				targetHeight:300
+				targetHeight:300,
+				onChange: function(result) {
+					console.log(result);
+				}
 			});
 		});
 	</script>
+
