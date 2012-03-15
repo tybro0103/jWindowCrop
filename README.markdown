@@ -25,7 +25,7 @@ Options
 <table>
 	<tr>
 		<th>Option</th>
-		<th>Typer</th>
+		<th>Type</th>
 		<th>Default</th>
 		<th>Required</th>
 		<th>Description</th>
