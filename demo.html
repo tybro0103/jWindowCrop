@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>jZoomCrop</title>
+	<link href="jWindowCrop.css" media="screen" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript" src="jquery.jWindowCrop.js"></script>
+	<style type="text/css">
+		body {
+			font-family:sans-serif;
+		}
+		.jwc_frame {
+			border:5px solid black;
+		}
+	</style>
+</head>
+<body>
+
+	<img id="target3" class="crop_me" alt="" src="images/dock.jpg" />
+
+	<div id="results">
+		<b>X</b>: <span id="crop_x"></span><br />
+		<b>Y</b>: <span id="crop_y"></span><br />
+		<b>W</b>: <span id="crop_w"></span><br />
+		<b>H</b>: <span id="crop_h"></span><br />
+	</div>
+
+	<script type="text/javascript">
+		$(function() {
+			$('.crop_me').jWindowCrop({
+				targetWidth: 400,
+				targetHeight: 400,
+				onChange: function(result) {
+					$('#crop_x').text(result.cropX);
+					$('#crop_y').text(result.cropY);
+					$('#crop_w').text(result.cropW);
+					$('#crop_h').text(result.cropH);
+				}
+			});
+		});
+	</script>
+
+</body>
+</html>
