@@ -16,6 +16,7 @@
 	$.jWindowCrop = function(image, options){
 		var base = this;
 		base.namespace = 'jWindowCrop';
+		base.originalWidth = 0;
 		base.$image = $(image); // target image jquery element
 		base.image = image; // target image dom element
 		base.$image.data("jWindowCrop", base); // target frame jquery element
@@ -61,8 +62,10 @@
 		};
 
 		function initializeDimensions() {
-			base.originalWidth = base.$image.width();
-			base.originalHeight = base.$image.height();
+			if(base.originalWidth == 0) {
+				base.originalWidth = base.$image.width();
+				base.originalHeight = base.$image.height();
+			}
 			if(base.originalWidth > 0) {
 				var widthRatio = base.options.targetWidth / base.originalWidth;
 				var heightRatio = base.options.targetHeight / base.originalHeight;
