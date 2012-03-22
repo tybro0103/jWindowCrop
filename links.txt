@@ -1,5 +1,0 @@
-Check if image is loaded:
-http://stackoverflow.com/questions/1977871/check-if-an-image-is-loaded-no-errors-in-javascript
-
-jQuery plugin format:
-http://stackoverflow.com/questions/5162120/sharing-settings-across-methods-in-namespaced-jquery-plugin
