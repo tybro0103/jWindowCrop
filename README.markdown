@@ -59,7 +59,7 @@ Options
 		<td>showControlsOnStart</td><td>boolean</td><td>true</td><td>no</td>
 		<td>If true, controls will be hidden on start. Note: Do not set both this and smartControls to false.</td>
 	</tr>
-<table>
+</table>
 
 Advanced
 ========
