@@ -1,8 +1,6 @@
-<div id="section_description">
 Description
 ===========
 Easy to use jQuery plugin for zoom & pan image cropping.
-</div>
 
 Demo
 ====
