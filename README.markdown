@@ -1,6 +1,8 @@
+<div id="section_description">
 Description
 ===========
 Easy to use jQuery plugin for zoom & pan image cropping.
+</div>
 
 Demo
 ====
@@ -41,11 +43,11 @@ Options
 	</tr>
 	<tr>
 		<td>onChange</td><td>function</td><td>function(){}</td><td>no</td>
-		<td>Callback function that gets called whenever the values change. cropX, cropY, cropW, cropH, mustStretch (boolean) values are passed to this function in a hash. Use the this keyword in the function for a reference the element that was updated.</td>
+		<td>Callback function that gets called whenever the values change. cropX, cropY, cropW, cropH, mustStretch (boolean) values are passed to this function in a hash. Use the this keyword in the function for a reference to the element that was updated.</td>
 	</tr>
 	<tr>
 		<td>zoomSteps</td><td>integer</td><td>10</td><td>no</td>
-		<td>Number of incremental zoom stops. With the default of 10, you have to click the zoom in button 9 times to reach 100%.</td>
+		<td>Number of incremental zoom steps. With the default of 10, you have to click the zoom-in button 9 times to reach 100%.</td>
 	</tr>
 	<tr>
 		<td>loadingText</td><td>string</td><td>"Loading..."</td><td>no</td>
@@ -63,7 +65,7 @@ Options
 
 Advanced
 ========
-The structure for this plugin comes from http://starter.pixelgraphics.us/. An object is created for each dom element this is initialized on. A reverse refernce to that object can be accessed like so:
+The structure for this plugin comes from http://starter.pixelgraphics.us/. An object is created for each dom element jWindowCrop is initialized on. A reverse reference to that object can be accessed like so:
 
 	var jwc = $('img#beach').getjWindowCrop();
 
