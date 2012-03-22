@@ -7,12 +7,35 @@
 	<script type="text/javascript" src="jquery.jWindowCrop.js"></script>
 	<style type="text/css">
 		body {
+			font-family:sans-serif;
+			font-size:13px;
+		}
+		#results {
 			font-family:monospace;
 			font-size:20px;
 		}
+		/* over ride defaults */
 		.jwc_frame {
 			border:5px solid black;
+		} .jwc_controls {
+			height:24px;
+		} .jwc_zoom_in, .jwc_zoom_out {
+			display:block; background-color:transparent;
+			cursor:pointer;
+			width:16px; height:16px;
+			float:right; margin:4px 4px 0px 0px;
+			text-decoration:none; text-align:center;
+			font-size:16px; font-weight:bold; color:#000;
+		} .jwc_zoom_in {
+			background-image:url(images/round_plus_16.png);
+		} .jwc_zoom_out {
+			background-image:url(images/round_minus_16.png);
+		} .jwc_zoom_in::after {
+			content:"";
+		} .jwc_zoom_out::after {
+			content:"";
 		}
+		/* over ride defaults */
 	</style>
 </head>
 <body>
@@ -30,7 +53,8 @@
 		$(function() {
 			$('.crop_me').jWindowCrop({
 				targetWidth: 400,
-				targetHeight: 400,
+				targetHeight: 300,
+				loadingText: 'hello world',
 				onChange: function(result) {
 					$('#crop_x').text(result.cropX);
 					$('#crop_y').text(result.cropY);

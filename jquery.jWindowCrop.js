@@ -8,34 +8,38 @@
 
 (function($){
 	function fillContainer(val, targetLength, containerLength) { // ensure that no gaps are between target's edges and container's edges
-		if(val > 0) val = 0;
 		if(val + targetLength < containerLength) val = containerLength-targetLength;
+		if(val > 0) val = 0;
 		return val;
 	}
 
 	$.jWindowCrop = function(image, options){
 		var base = this;
-		base.namespace = 'jWindowCrop';
-		base.originalWidth = 0;
 		base.$image = $(image); // target image jquery element
 		base.image = image; // target image dom element
 		base.$image.data("jWindowCrop", base); // target frame jquery element
 
+		base.namespace = 'jWindowCrop';
+		base.originalWidth = 0;
 		base.isDragging = false;
 		
 		base.init = function(){
+			base.$image.css({display:'none'}); // hide image until loaded
 			base.options = $.extend({},$.jWindowCrop.defaultOptions, options);
 			if(base.options.zoomSteps < 2) base.options.zoomSteps = 2;
 
 			base.$image.addClass('jwc_image').wrap('<div class="jwc_frame" />'); // wrap image in frame
 			base.$frame = base.$image.parent();
-			base.$frame.append('<div class="jwc_controls"><span>click to drag</span><a href="#" class="jwc_zoom_in"></a><a href="#" class="jwc_zoom_out"></a></div>');
+			base.$frame.append(base.options.loadingText);
+			base.$frame.append('<div class="jwc_controls" style="display:'+(base.options.showControlsOnStart ? 'block' : 'none')+';"><span>click to drag</span><a href="#" class="jwc_zoom_in"></a><a href="#" class="jwc_zoom_out"></a></div>');
 			base.$frame.css({'overflow': 'hidden', 'position': 'relative', 'width': base.options.targetWidth, 'height': base.options.targetHeight});
 			base.$image.css({'position': 'absolute', 'top': '0px', 'left': '0px'});
 			initializeDimensions();
 
 			base.$frame.find('.jwc_zoom_in').on('click.'+base.namespace, base.zoomIn);
 			base.$frame.find('.jwc_zoom_out').on('click.'+base.namespace, base.zoomOut);
+			base.$frame.on('mouseenter.'+base.namespace, handleMouseEnter);
+			base.$frame.on('mouseleave.'+base.namespace, handleMouseLeave);
 			base.$image.on('load.'+base.namespace, handeImageLoad);
 			base.$image.on('mousedown.'+base.namespace, handleMouseDown);
 			$(document).on('mousemove.'+base.namespace, handleMouseMove);
@@ -43,8 +47,13 @@
 		};
 
 		base.setZoom = function(percent) {
-			if(percent < base.minPercent) percent = base.minPercent;
-			if(percent > 1.0) percent = 1;
+			if(base.minPercent >= 1) {
+				percent = base.minPercent;
+			} else if(percent > 1.0) {
+				percent = 1;
+			} else if(percent < base.minPercent) {
+				percent = base.minPercent;	
+			}
 			base.$image.width(Math.ceil(base.originalWidth*percent));
 			base.workingPercent = percent;
 			focusOnCenter();
@@ -69,9 +78,15 @@
 			if(base.originalWidth > 0) {
 				var widthRatio = base.options.targetWidth / base.originalWidth;
 				var heightRatio = base.options.targetHeight / base.originalHeight;
-				base.minPercent = (widthRatio >= heightRatio) ? widthRatio : heightRatio;
+				//base.minPercent = (widthRatio >= heightRatio) ? widthRatio : heightRatio;
+				if(widthRatio >= heightRatio) {
+					base.minPercent = (base.originalWidth < base.options.targetWidth) ? (base.options.targetWidth / base.originalWidth) : widthRatio;
+				} else {
+					base.minPercent = (base.originalHeight < base.options.targetHeight) ? (base.options.targetHeight / base.originalHeight) : heightRatio;
+				}
 				base.focalPoint = {'x': Math.round(base.originalWidth/2), 'y': Math.round(base.originalHeight/2)};
 				base.setZoom(base.minPercent);
+				base.$image.fadeIn('fast'); //display image now that it has loaded
 			}
 		}
 		function storeFocalPoint() {
@@ -90,7 +105,8 @@
 				cropX: Math.floor(parseInt(base.$image.css('left'))/base.workingPercent*-1),
 				cropY: Math.floor(parseInt(base.$image.css('top'))/base.workingPercent*-1),
 				cropW: Math.round(base.options.targetWidth/base.workingPercent),
-				cropH: Math.round(base.options.targetHeight/base.workingPercent)
+				cropH: Math.round(base.options.targetHeight/base.workingPercent),
+				mustStretch: (base.minPercent > 1)
 			};
 			base.options.onChange.call(base.image, base.result);
 		}
@@ -117,6 +133,12 @@
 				updateResult();
 			}
 		}
+		function handleMouseEnter() {
+			if(base.options.smartControls) base.$frame.find('.jwc_controls').fadeIn('fast');
+		}
+		function handleMouseLeave() {
+			if(base.options.smartControls) base.$frame.find('.jwc_controls').fadeOut('fast');
+		}
 		
 		base.init();
 	};
@@ -125,6 +147,9 @@
 		targetWidth: 320,
 		targetHeight: 180,
 		zoomSteps: 10,
+		loadingText: 'Loading...',
+		smartControls: true,
+		showControlsOnStart: true,
 		onChange: function() {}
 	};
 	
