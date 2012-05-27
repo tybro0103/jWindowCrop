@@ -76,17 +76,50 @@
 				base.originalHeight = base.$image.height();
 			}
 			if(base.originalWidth > 0) {
+				// first calculate the "all the way zoomed out" position
+				// this should always still fill the frame so there's no blank space.
+				// this will be the value you're never allowed to get lower than.
 				var widthRatio = base.options.targetWidth / base.originalWidth;
 				var heightRatio = base.options.targetHeight / base.originalHeight;
-				//base.minPercent = (widthRatio >= heightRatio) ? widthRatio : heightRatio;
 				if(widthRatio >= heightRatio) {
 					base.minPercent = (base.originalWidth < base.options.targetWidth) ? (base.options.targetWidth / base.originalWidth) : widthRatio;
 				} else {
 					base.minPercent = (base.originalHeight < base.options.targetHeight) ? (base.options.targetHeight / base.originalHeight) : heightRatio;
 				}
+
+				// now if they've set initial width and height, calculate the
+				// starting zoom percentage. 
+				if (base.options.cropW!==null && base.options.cropH!==null) {
+					widthRatio = base.options.targetWidth / base.options.cropW;
+					heightRatio = base.options.targetHeight / base.options.cropH;
+					if(widthRatio >= heightRatio) {
+						var cropPercent = (base.originalWidth < base.options.targetWidth) ? (base.options.targetWidth / base.originalWidth) : widthRatio;
+					} else {
+						var cropPercent = (base.originalHeight < base.options.targetHeight) ? (base.options.targetHeight / base.originalHeight) : heightRatio;
+					}
+				}
+				// If they didn't specify anything then use the above "all the
+				// way zoomed out" value.
+				else {
+					var cropPercent = base.minPercent;
+				}
+
+				// for the initial zoom we'll just jump into the center of the image.
 				base.focalPoint = {'x': Math.round(base.originalWidth/2), 'y': Math.round(base.originalHeight/2)};
-				base.setZoom(base.minPercent);
-				base.$image.fadeIn('fast'); //display image now that it has loaded
+				base.setZoom(cropPercent);
+
+				// now if presets x&y have been passed, then we have to slide over 
+				// to the new position after zooming. Why after? because the initial
+				// position might not be valid until after we zoom...
+				if (base.options.cropX!==null && base.options.cropY!==null) {
+					base.$image.css({'left' : ('-'+base.options.cropX.toString()+'px'), 'top' : ('-'+base.options.cropY.toString()+'px')});
+					storeFocalPoint();
+					// make sure we notify the onChange function about this...
+					updateResult();
+				}
+
+				// now that we've loaded and positioned the image, we can display it
+				base.$image.fadeIn('fast'); 
 			}
 		}
 		function storeFocalPoint() {
@@ -150,6 +183,10 @@
 		loadingText: 'Loading...',
 		smartControls: true,
 		showControlsOnStart: true,
+		cropX: null,
+		cropY: null,
+		cropW: null,
+		cropH: null,
 		onChange: function() {}
 	};
 	
