@@ -124,7 +124,7 @@
 				// to the new position after zooming. Why after? because the initial
 				// position might not be valid until after we zoom...
 				if (base.options.cropX!==null && base.options.cropY!==null) {
-					base.$image.css({'left' : ('-'+base.options.cropX.toString()+'px'), 'top' : ('-'+base.options.cropY.toString()+'px')});
+					base.$image.css({'left' : (Math.floor(parseInt(base.options.cropX)*base.workingPercent*-1)+'px'), 'top' : (Math.floor(parseInt(base.options.cropY)*base.workingPercent*-1)+'px')});
 					storeFocalPoint();
 					// make sure we notify the onChange function about this...
 					updateResult();
