@@ -69,6 +69,18 @@
 			base.setZoom(base.workingPercent-zoomIncrement);
 			return false;
 		};
+		base.reset = function() {
+			base.originalWidth = 0;
+			base.originalHeight = 0;
+			base.options.cropX = null;
+			base.options.cropY = null;
+			base.options.cropW = null;
+			base.options.cropH = null;
+			base.workingPercent = null;
+			base.$image.width('');
+			base.$frame.css({'width': base.options.targetWidth, 'height': base.options.targetHeight});
+			initializeDimensions();
+		}
 
 		function initializeDimensions() {
 			if(base.originalWidth == 0) {
