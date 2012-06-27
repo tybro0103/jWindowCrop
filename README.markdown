@@ -69,6 +69,20 @@ Options
 	</tr>
 </table>
 
+Methods
+======
+<table>
+	<tr>
+		<th>Method</th>
+		<th>Return</th>
+		<th>Description</th>
+	</tr>
+	<tr>
+		<td>reset()</td><td>void</td>
+		<td>Re-initializes the cropping area, including re-zooming and re-centering the image, and adjusting the canvas size to the new values in options.targetWidth and options.targetHeight (if changed).</td>
+	</tr>
+</table>
+
 Advanced
 ========
 The structure for this plugin comes from http://starter.pixelgraphics.us/. An object is created for each dom element jWindowCrop is initialized on. A reverse reference to that object can be accessed like so:
