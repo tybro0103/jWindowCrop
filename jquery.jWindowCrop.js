@@ -30,7 +30,7 @@
 
 			base.$image.addClass('jwc_image').wrap('<div class="jwc_frame" />'); // wrap image in frame
 			base.$frame = base.$image.parent();
-			base.$frame.append(base.options.loadingText);
+			base.$frame.append($('<span class="jwc_loading_text">').text(base.options.loadingText));
 			base.$frame.append('<div class="jwc_controls" style="display:'+(base.options.showControlsOnStart ? 'block' : 'none')+';"><span>click to drag</span><a href="#" class="jwc_zoom_in"></a><a href="#" class="jwc_zoom_out"></a></div>');
 			base.$frame.css({'overflow': 'hidden', 'position': 'relative', 'width': base.options.targetWidth, 'height': base.options.targetHeight});
 			base.$image.css({'position': 'absolute', 'top': '0px', 'left': '0px'});
@@ -80,7 +80,25 @@
 			base.$image.width('');
 			base.$frame.css({'width': base.options.targetWidth, 'height': base.options.targetHeight});
 			initializeDimensions();
-		}
+		};
+		base.destroy = function() {
+			// remove event handlers
+			base.$image.off('load.'+base.namespace, handeImageLoad);
+			base.$image.off('mousedown.'+base.namespace, handleMouseDown);
+			$(document).off('mousemove.'+base.namespace, handleMouseMove);
+			$(document).off('mouseup.'+base.namespace, handleMouseUp);
+			base.$image.css({display:''}); // re-show image
+			// clear out the positioning info we added
+			base.$image.css({'position': '', 'top': '', 'left': ''});
+			// remove the controls
+			base.$frame.find('.jwc_controls').remove();
+			// remove the "loading" text
+			base.$frame.find('.jwc_loading_text').remove();
+			// remove the css from the image and then unwrap the frame from the image
+			base.$image.removeClass('jwc_image').unwrap(); // unwrap image from the frame
+			base.$frame = null;
+			base.$image = null;
+		};
 
 		function initializeDimensions() {
 			if(base.originalWidth == 0) {
