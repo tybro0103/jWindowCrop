@@ -81,6 +81,10 @@ Methods
 		<td>reset()</td><td>void</td>
 		<td>Re-initializes the cropping area, including re-zooming and re-centering the image, and adjusting the canvas size to the new values in options.targetWidth and options.targetHeight (if changed).</td>
 	</tr>
+	<tr>
+		<td>destroy()</td><td>void</td>
+		<td>Undoes everything init() does and returns the DOM to it's initial state.</td>
+	</tr>
 </table>
 
 Advanced
