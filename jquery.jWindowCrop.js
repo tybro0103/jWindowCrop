@@ -1,3 +1,4 @@
+
 /*
  * jWindowCrop v1.0.0
  *
@@ -16,6 +17,8 @@
 	$.jWindowCrop = function(image, options){
 		var base = this;
 		base.$image = $(image); // target image jquery element
+		base.originalHeight = base.$image.css('height');
+		base.originalWidth = base.$image.css('width');
 		base.image = image; // target image dom element
 		base.$image.data("jWindowCrop", base); // target frame jquery element
 
@@ -55,6 +58,7 @@
 				percent = base.minPercent;	
 			}
 			base.$image.width(Math.ceil(base.originalWidth*percent));
+			base.$image.height(Math.ceil(base.originalHeight*percent));
 			base.workingPercent = percent;
 			focusOnCenter();
 			updateResult();
@@ -89,7 +93,7 @@
 			$(document).off('mouseup.'+base.namespace, handleMouseUp);
 			base.$image.css({display:''}); // re-show image
 			// clear out the positioning info we added
-			base.$image.css({'position': '', 'top': '', 'left': ''});
+			base.$image.css({'position': '', 'top': '', 'left': '', 'width':base.originalWidth, 'height':base.originalHeight});
 			// remove the controls
 			base.$frame.find('.jwc_controls').remove();
 			// remove the "loading" text
