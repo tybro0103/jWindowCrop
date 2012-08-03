@@ -40,6 +40,14 @@ Options
 		<td>Height in pixels of the cropping window</td>
 	</tr>
 	<tr>
+		<td>cropX / cropY</td><td>integer</td><td>null</td><td>no</td>
+		<td>Specifies the initial start position. If you've previously stored the results of JWC you can set these values (along with  cropH and cropW) to what they were in order to continue where you left off. You must specify both cropX and cropY to use this feature (and it won't make much sense without cropW and cropH).</td>
+	</tr>
+	<tr>
+		<td>cropW / cropH</td><td>integer</td><td>null</td><td>no</td>
+		<td>Specifies the initial zoom level. If you've previously stored the results of JWC you can set these values (along with  cropX and cropY) to what they were in order to continue where you left off. You must specify both cropW and cropH to use this feature (and it won't make much sense without cropX and cropY)</td>
+	</tr>
+	<tr>
 		<td>onChange</td><td>function</td><td>function(){}</td><td>no</td>
 		<td>Callback function that gets called whenever the values change. cropX, cropY, cropW, cropH, mustStretch (boolean) values are passed to this function in a hash. Use the this keyword in the function for a reference to the element that was updated.</td>
 	</tr>
@@ -58,6 +66,24 @@ Options
 	<tr>
 		<td>showControlsOnStart</td><td>boolean</td><td>true</td><td>no</td>
 		<td>If true, controls will be hidden on start. Note: Do not set both this and smartControls to false.</td>
+	</tr>
+</table>
+
+Methods
+======
+<table>
+	<tr>
+		<th>Method</th>
+		<th>Return</th>
+		<th>Description</th>
+	</tr>
+	<tr>
+		<td>reset()</td><td>void</td>
+		<td>Re-initializes the cropping area, including re-zooming and re-centering the image, and adjusting the canvas size to the new values in options.targetWidth and options.targetHeight (if changed).</td>
+	</tr>
+	<tr>
+		<td>destroy()</td><td>void</td>
+		<td>Undoes everything init() does and returns the DOM to it's initial state.</td>
 	</tr>
 </table>
 

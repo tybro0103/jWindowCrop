@@ -1,3 +1,4 @@
+
 /*
  * jWindowCrop v1.0.0
  *
@@ -16,6 +17,8 @@
 	$.jWindowCrop = function(image, options){
 		var base = this;
 		base.$image = $(image); // target image jquery element
+		base.originalHeight = base.$image.css('height');
+		base.originalWidth = base.$image.css('width');
 		base.image = image; // target image dom element
 		base.$image.data("jWindowCrop", base); // target frame jquery element
 
@@ -30,7 +33,7 @@
 
 			base.$image.addClass('jwc_image').wrap('<div class="jwc_frame" />'); // wrap image in frame
 			base.$frame = base.$image.parent();
-			base.$frame.append(base.options.loadingText);
+			base.$frame.append($('<span class="jwc_loading_text">').text(base.options.loadingText));
 			base.$frame.append('<div class="jwc_controls" style="display:'+(base.options.showControlsOnStart ? 'block' : 'none')+';"><span>click to drag</span><a href="#" class="jwc_zoom_in"></a><a href="#" class="jwc_zoom_out"></a></div>');
 			base.$frame.css({'overflow': 'hidden', 'position': 'relative', 'width': base.options.targetWidth, 'height': base.options.targetHeight});
 			base.$image.css({'position': 'absolute', 'top': '0px', 'left': '0px'});
@@ -55,6 +58,7 @@
 				percent = base.minPercent;	
 			}
 			base.$image.width(Math.ceil(base.originalWidth*percent));
+			base.$image.height(Math.ceil(base.originalHeight*percent));
 			base.workingPercent = percent;
 			focusOnCenter();
 			updateResult();
@@ -69,6 +73,36 @@
 			base.setZoom(base.workingPercent-zoomIncrement);
 			return false;
 		};
+		base.reset = function() {
+			base.originalWidth = 0;
+			base.originalHeight = 0;
+			base.options.cropX = null;
+			base.options.cropY = null;
+			base.options.cropW = null;
+			base.options.cropH = null;
+			base.workingPercent = null;
+			base.$image.width('');
+			base.$frame.css({'width': base.options.targetWidth, 'height': base.options.targetHeight});
+			initializeDimensions();
+		};
+		base.destroy = function() {
+			// remove event handlers
+			base.$image.off('load.'+base.namespace, handeImageLoad);
+			base.$image.off('mousedown.'+base.namespace, handleMouseDown);
+			$(document).off('mousemove.'+base.namespace, handleMouseMove);
+			$(document).off('mouseup.'+base.namespace, handleMouseUp);
+			base.$image.css({display:''}); // re-show image
+			// clear out the positioning info we added
+			base.$image.css({'position': '', 'top': '', 'left': '', 'width':base.originalWidth, 'height':base.originalHeight});
+			// remove the controls
+			base.$frame.find('.jwc_controls').remove();
+			// remove the "loading" text
+			base.$frame.find('.jwc_loading_text').remove();
+			// remove the css from the image and then unwrap the frame from the image
+			base.$image.removeClass('jwc_image').unwrap(); // unwrap image from the frame
+			base.$frame = null;
+			base.$image = null;
+		};
 
 		function initializeDimensions() {
 			if(base.originalWidth == 0) {
@@ -76,17 +110,50 @@
 				base.originalHeight = base.$image.height();
 			}
 			if(base.originalWidth > 0) {
+				// first calculate the "all the way zoomed out" position
+				// this should always still fill the frame so there's no blank space.
+				// this will be the value you're never allowed to get lower than.
 				var widthRatio = base.options.targetWidth / base.originalWidth;
 				var heightRatio = base.options.targetHeight / base.originalHeight;
-				//base.minPercent = (widthRatio >= heightRatio) ? widthRatio : heightRatio;
 				if(widthRatio >= heightRatio) {
 					base.minPercent = (base.originalWidth < base.options.targetWidth) ? (base.options.targetWidth / base.originalWidth) : widthRatio;
 				} else {
 					base.minPercent = (base.originalHeight < base.options.targetHeight) ? (base.options.targetHeight / base.originalHeight) : heightRatio;
 				}
+
+				// now if they've set initial width and height, calculate the
+				// starting zoom percentage. 
+				if (base.options.cropW!==null && base.options.cropW!=='' && base.options.cropH!==null && base.options.cropH!=='') {
+					widthRatio = base.options.targetWidth / base.options.cropW;
+					heightRatio = base.options.targetHeight / base.options.cropH;
+					if(widthRatio >= heightRatio) {
+						var cropPercent = (base.originalWidth < base.options.targetWidth) ? (base.options.targetWidth / base.originalWidth) : widthRatio;
+					} else {
+						var cropPercent = (base.originalHeight < base.options.targetHeight) ? (base.options.targetHeight / base.originalHeight) : heightRatio;
+					}
+				}
+				// If they didn't specify anything then use the above "all the
+				// way zoomed out" value.
+				else {
+					var cropPercent = base.minPercent;
+				}
+
+				// for the initial zoom we'll just jump into the center of the image.
 				base.focalPoint = {'x': Math.round(base.originalWidth/2), 'y': Math.round(base.originalHeight/2)};
-				base.setZoom(base.minPercent);
-				base.$image.fadeIn('fast'); //display image now that it has loaded
+				base.setZoom(cropPercent);
+
+				// now if presets x&y have been passed, then we have to slide over 
+				// to the new position after zooming. Why after? because the initial
+				// position might not be valid until after we zoom...
+				if (base.options.cropX!==null && base.options.cropX!=='' && base.options.cropY!==null && base.options.cropY!=='') {
+					base.$image.css({'left' : (Math.floor(parseInt(base.options.cropX)*base.workingPercent*-1)+'px'), 'top' : (Math.floor(parseInt(base.options.cropY)*base.workingPercent*-1)+'px')});
+					storeFocalPoint();
+					// make sure we notify the onChange function about this...
+					updateResult();
+				}
+
+				// now that we've loaded and positioned the image, we can display it
+				base.$image.fadeIn('fast'); 
 			}
 		}
 		function storeFocalPoint() {
@@ -150,6 +217,10 @@
 		loadingText: 'Loading...',
 		smartControls: true,
 		showControlsOnStart: true,
+		cropX: null,
+		cropY: null,
+		cropW: null,
+		cropH: null,
 		onChange: function() {}
 	};
 	
