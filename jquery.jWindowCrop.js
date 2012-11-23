@@ -34,7 +34,6 @@
 			base.$frame.append('<div class="jwc_controls" style="display:'+(base.options.showControlsOnStart ? 'block' : 'none')+';"><span>click to drag</span><a href="#" class="jwc_zoom_in"></a><a href="#" class="jwc_zoom_out"></a></div>');
 			base.$frame.css({'overflow': 'hidden', 'position': 'relative', 'width': base.options.targetWidth, 'height': base.options.targetHeight});
 			base.$image.css({'position': 'absolute', 'top': '0px', 'left': '0px'});
-			initializeDimensions();
 
 			base.$frame.find('.jwc_zoom_in').on('click.'+base.namespace, base.zoomIn);
 			base.$frame.find('.jwc_zoom_out').on('click.'+base.namespace, base.zoomOut);
