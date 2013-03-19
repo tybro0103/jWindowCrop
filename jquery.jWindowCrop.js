@@ -48,7 +48,8 @@
 
 		base.destroy = function() {
 			base.$image.removeData("jWindowCrop"); // remove data
-			$(document).unbind(); // remove body binds
+			$(document).unbind('mousemove'); // remove mousemove body bind
+			$(document).unbind('mouseup');   // remove mouseup body bind
 			base.$image.unbind(); // remove image binds
 			base.$frame.unbind(); // remove frame binds
 			base.$frame.find('.jwc_zoom_out').unbind(); // remove zoom triggers
