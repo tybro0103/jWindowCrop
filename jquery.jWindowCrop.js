@@ -25,19 +25,27 @@
 		
 		base.init = function(){
 			base.$image.css({display:'none'}); // hide image until loaded
-			base.options = $.extend({},$.jWindowCrop.defaultOptions, options);
+			base.options = $.extend(true,{},$.jWindowCrop.defaultOptions, options);
 			if(base.options.zoomSteps < 2) base.options.zoomSteps = 2;
 
 			base.$image.addClass('jwc_image').wrap('<div class="jwc_frame" />'); // wrap image in frame
 			base.$frame = base.$image.parent();
 			base.$frame.append('<div class="jwc_loader">' + base.options.loadingText + '</div>');
-			base.$frame.append('<div class="jwc_controls" style="display:'+(base.options.showControlsOnStart ? 'block' : 'none')+';"><span>click to drag</span><a href="#" class="jwc_zoom_in"></a><a href="#" class="jwc_zoom_out"></a></div>');
+			base.$frame.append('<div class="jwc_controls" style="display:'+(base.options.showControlsOnStart ? 'block' : 'none')+';"><span>click to drag</span></div>');
 			base.$frame.css({'overflow': 'hidden', 'position': 'relative', 'width': base.options.targetWidth, 'height': base.options.targetHeight});
 			base.$image.css({'position': 'absolute', 'top': '0px', 'left': '0px'});
 			initializeDimensions();
-
-			base.$frame.find('.jwc_zoom_in').on('click.'+base.namespace, base.zoomIn);
-			base.$frame.find('.jwc_zoom_out').on('click.'+base.namespace, base.zoomOut);
+			
+			//Add custom buttons to default buttons array.
+			$.merge(base.options.buttons,base.options.customButtons);
+			$.each(base.options.buttons,function (i,button){
+				base.$frame.find('.jwc_controls').append('<a href="#" class="'+button.class+'" title="'+button.name+'">' + ((button.content) ? button.content : '')+ '</a>');
+				if (button.function && base[button.function]) { //Bind function to button.
+					base.$frame.find('.'+button.class).on('click.'+base.namespace, base[button.function]);
+				} else if (button.handler){
+					base.$frame.find('.'+button.class).on('click.'+base.namespace,button.handler);
+				}
+			});
 			base.$frame.on('mouseenter.'+base.namespace, handleMouseEnter);
 			base.$frame.on('mouseleave.'+base.namespace, handleMouseLeave);
 			base.$image.on('load.'+base.namespace, handeImageLoad);
@@ -51,12 +59,14 @@
 			$(document).unbind(); // remove body binds
 			base.$image.unbind(); // remove image binds
 			base.$frame.unbind(); // remove frame binds
-			base.$frame.find('.jwc_zoom_out').unbind(); // remove zoom triggers
-			base.$frame.find('.jwc_zoom_in').unbind();  // remove zoom triggers
+			$.each(base.options.buttons,function (i,button){
+				base.$frame.find('.jwc_controls').unbind();// remove button triggers
+			});
 			$('.jwc_loader').remove();   // remove the added text
 			$('.jwc_controls').remove(); // remove the added controls
 			base.$image.removeAttr( 'style' ); // undo the style
 			base.$image.unwrap(); // undo the wrap
+			base.options = null;
 		};
 		
 		base.setZoom = function(percent) {
@@ -163,7 +173,9 @@
 		loadingText: 'Loading...',
 		smartControls: true,
 		showControlsOnStart: true,
-		onChange: function() {}
+		onChange: function() {},
+		buttons: [{class:'jwc_zoom_in',name:'Zoom In', function:'zoomIn'},{class:'jwc_zoom_out',name:'Zoom Out', function:'zoomOut'}],
+		customButtons:[]
 	};
 	
 	$.fn.jWindowCrop = function(options){

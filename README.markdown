@@ -59,6 +59,10 @@ Options
 		<td>showControlsOnStart</td><td>boolean</td><td>true</td><td>no</td>
 		<td>If true, controls will be hidden on start. Note: Do not set both this and smartControls to false.</td>
 	</tr>
+	<tr>
+		<td>customButtons</td><td>array</td><td>[]</td><td>no</td>
+		<td>Buttons can be added to the toolbar here. e.g: [{class:'jwc_replace',name:'Replace Image', handler:triggerUpload, content:'Replace Image'}]</td>
+	</tr>
 </table>
 
 Advanced
