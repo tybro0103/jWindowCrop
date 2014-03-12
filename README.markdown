@@ -40,6 +40,14 @@ Options
 		<td>Height in pixels of the cropping window</td>
 	</tr>
 	<tr>
+		<td>startX</td><td>integer</td><td>null</td><td>no</td>
+		<td>Set start image position on X axis.</td>
+	</tr>
+	<tr>
+		<td>startY</td><td>integer</td><td>null</td><td>no</td>
+		<td>Set start image position on Y axis.</td>
+	</tr>
+	<tr>
 		<td>onChange</td><td>function</td><td>function(){}</td><td>no</td>
 		<td>Callback function that gets called whenever the values change. cropX, cropY, cropW, cropH, mustStretch (boolean) values are passed to this function in a hash. Use the this keyword in the function for a reference to the element that was updated.</td>
 	</tr>
