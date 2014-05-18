@@ -1,6 +1,8 @@
 .jwc_frame {
 } .jwc_image {
 	cursor:move;
+	max-width:none;
+	max-height:none;
 } .jwc_controls {
 	background-color:#000;
 	width:100%; height:26px;
