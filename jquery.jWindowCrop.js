@@ -41,9 +41,9 @@
 			base.$frame.on('mouseenter.'+base.namespace, handleMouseEnter);
 			base.$frame.on('mouseleave.'+base.namespace, handleMouseLeave);
 			base.$image.on('load.'+base.namespace, handeImageLoad);
-			base.$image.on('mousedown.'+base.namespace, handleMouseDown);
-			$(document).on('mousemove.'+base.namespace, handleMouseMove);
-			$(document).on('mouseup.'+base.namespace, handleMouseUp);
+			base.$image.on('mousedown.'+base.namespace+' touchstart.'+base.namespace, handleMouseDown);
+			$(document).on('mousemove.'+base.namespace+' touchmove.'+base.namespace, handleMouseMove);
+			$(document).on('mouseup.'+base.namespace+' touchend.'+base.namespace, handleMouseUp);
 		};
 
 		base.destroy = function() {
@@ -129,7 +129,7 @@
 		function handleMouseDown(event) {
 			event.preventDefault(); //some browsers do image dragging themselves
 			base.isDragging = true;
-			base.dragMouseCoords = {x: event.pageX, y: event.pageY};
+			base.dragMouseCoords = {x: event.pageX || event.originalEvent.touches[0].pageX, y: event.pageY || event.originalEvent.touches[0].pageY};
 			base.dragImageCoords = {x: parseInt(base.$image.css('left')), y: parseInt(base.$image.css('top'))}
 		}
 		function handleMouseUp() {
@@ -137,8 +137,8 @@
 		}
 		function handleMouseMove(event) {
 			if(base.isDragging) {
-				var xDif = event.pageX - base.dragMouseCoords.x;
-				var yDif = event.pageY - base.dragMouseCoords.y;
+				var xDif = (event.pageX || event.originalEvent.touches[0].pageX) - base.dragMouseCoords.x;
+				var yDif = (event.pageY || event.originalEvent.touches[0].pageY) - base.dragMouseCoords.y;
 				var newLeft = fillContainer((base.dragImageCoords.x + xDif), base.$image.width(), base.options.targetWidth);
 				var newTop = fillContainer((base.dragImageCoords.y + yDif), base.$image.height(), base.options.targetHeight);
 				base.$image.css({'left' : (newLeft.toString()+'px'), 'top' : (newTop.toString()+'px')});
