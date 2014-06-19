@@ -47,16 +47,19 @@
 		};
 
 		base.destroy = function() {
-			base.$image.removeData("jWindowCrop"); // remove data
-			$(document).unbind(); // remove body binds
-			base.$image.unbind(); // remove image binds
-			base.$frame.unbind(); // remove frame binds
-			base.$frame.find('.jwc_zoom_out').unbind(); // remove zoom triggers
-			base.$frame.find('.jwc_zoom_in').unbind();  // remove zoom triggers
-			$('.jwc_loader').remove();   // remove the added text
-			$('.jwc_controls').remove(); // remove the added controls
+			base.$image.removeData("jWindowCrop");         // remove data
+			$(document).off('mouseup.'+base.namespace);    // remove body binds
+			$(document).off('mousemove.'+base.namespace);  // remove body binds
+			base.$image.off('mousedown.'+base.namespace);  // remove image binds
+			base.$image.off('load.'+base.namespace);       // remove image binds
+			base.$frame.off('mouseleave.'+base.namespace); // remove frame binds
+			base.$frame.off('mouseenter.'+base.namespace); // remove frame binds
+			base.$frame.find('.jwc_zoom_out').off('click.'+base.namespace); // remove zoom triggers
+			base.$frame.find('.jwc_zoom_in').off('click.'+base.namespace);  // remove zoom triggers
+			$('.jwc_loader').remove();         // remove the added text
+			$('.jwc_controls').remove();       // remove the added controls
 			base.$image.removeAttr( 'style' ); // undo the style
-			base.$image.unwrap(); // undo the wrap
+			base.$image.unwrap();              // undo the wrap
 		};
 		
 		base.setZoom = function(percent) {
