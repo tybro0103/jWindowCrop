@@ -22,7 +22,7 @@
 		base.namespace = 'jWindowCrop';
 		base.originalWidth = 0;
 		base.isDragging = false;
-		
+
 		base.init = function(){
 			base.$image.css({display:'none'}); // hide image until loaded
 			base.options = $.extend({},$.jWindowCrop.defaultOptions, options);
@@ -48,24 +48,24 @@
 
 		base.destroy = function() {
 			base.$image.removeData("jWindowCrop"); // remove data
-			$(document).unbind(); // remove body binds
-			base.$image.unbind(); // remove image binds
-			base.$frame.unbind(); // remove frame binds
-			base.$frame.find('.jwc_zoom_out').unbind(); // remove zoom triggers
-			base.$frame.find('.jwc_zoom_in').unbind();  // remove zoom triggers
+			$(document).unbind('.'+base.namespace); // remove body binds
+			base.$image.unbind('.'+base.namespace); // remove image binds
+			base.$frame.unbind('.'+base.namespace); // remove frame binds
+			base.$frame.find('.jwc_zoom_out').unbind('.'+base.namespace); // remove zoom triggers
+			base.$frame.find('.jwc_zoom_in').unbind('.'+base.namespace);  // remove zoom triggers
 			$('.jwc_loader').remove();   // remove the added text
 			$('.jwc_controls').remove(); // remove the added controls
 			base.$image.removeAttr( 'style' ); // undo the style
 			base.$image.unwrap(); // undo the wrap
 		};
-		
+
 		base.setZoom = function(percent) {
 			if(base.minPercent >= 1) {
 				percent = base.minPercent;
 			} else if(percent > 1.0) {
 				percent = 1;
 			} else if(percent < base.minPercent) {
-				percent = base.minPercent;	
+				percent = base.minPercent;
 			}
 			base.$image.width(Math.ceil(base.originalWidth*percent));
 			base.workingPercent = percent;
@@ -152,10 +152,10 @@
 		function handleMouseLeave() {
 			if(base.options.smartControls) base.$frame.find('.jwc_controls').fadeOut('fast');
 		}
-		
+
 		base.init();
 	};
-	
+
 	$.jWindowCrop.defaultOptions = {
 		targetWidth: 320,
 		targetHeight: 180,
@@ -165,15 +165,14 @@
 		showControlsOnStart: true,
 		onChange: function() {}
 	};
-	
+
 	$.fn.jWindowCrop = function(options){
 		return this.each(function(){
 			(new $.jWindowCrop(this, options));
 		});
 	};
-	
+
 	$.fn.getjWindowCrop = function(){
 		return this.data("jWindowCrop");
 	};
 })(jQuery);
-
