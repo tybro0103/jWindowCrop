@@ -22,7 +22,7 @@
 		base.namespace = 'jWindowCrop';
 		base.originalWidth = 0;
 		base.isDragging = false;
-		
+
 		base.init = function(){
 			base.$image.css({display:'none'}); // hide image until loaded
 			base.options = $.extend({},$.jWindowCrop.defaultOptions, options);
@@ -66,7 +66,7 @@
 			} else if(percent > 1.0) {
 				percent = 1;
 			} else if(percent < base.minPercent) {
-				percent = base.minPercent;	
+				percent = base.minPercent;
 			}
 			base.$image.width(Math.ceil(base.originalWidth*percent));
 			base.workingPercent = percent;
@@ -98,6 +98,7 @@
 				} else {
 					base.minPercent = (base.originalHeight < base.options.targetHeight) ? (base.options.targetHeight / base.originalHeight) : heightRatio;
 				}
+				// alert(base.options.initY);
 				base.focalPoint = {'x': Math.round(base.originalWidth/2), 'y': Math.round(base.originalHeight/2)};
 				base.setZoom(base.minPercent);
 				base.$image.fadeIn('fast'); //display image now that it has loaded
@@ -109,8 +110,22 @@
 			base.focalPoint = {'x': Math.round(x), 'y': Math.round(y)};
 		}
 		function focusOnCenter() {
-			var left = fillContainer((Math.round((base.focalPoint.x*base.workingPercent) - base.options.targetWidth/2)*-1), base.$image.width(), base.options.targetWidth);
-			var top = fillContainer((Math.round((base.focalPoint.y*base.workingPercent) - base.options.targetHeight/2)*-1), base.$image.height(), base.options.targetHeight);
+			var left,
+				top,
+				posX,
+				posY;
+			if (base.options.initX == 'auto') {
+				posX = Math.round((base.focalPoint.x*base.workingPercent) - base.options.targetWidth/2)*-1;
+			} else {
+				posX = (base.options.initX * base.workingPercent * -1);
+			}
+			if (base.options.initY == 'auto') {
+				posY = Math.round((base.focalPoint.y*base.workingPercent) - base.options.targetHeight/2)*-1;
+			} else {
+				posY = (base.options.initY * base.workingPercent * -1);
+			}
+			left = fillContainer(posX, base.$image.width(), base.options.targetWidth);
+			top = fillContainer(posY, base.$image.height(), base.options.targetHeight);
 			base.$image.css({'left': (left.toString()+'px'), 'top': (top.toString()+'px')})
 			storeFocalPoint();
 		}
@@ -153,10 +168,10 @@
 		function handleMouseLeave() {
 			if(base.options.smartControls) base.$frame.find('.jwc_controls').fadeOut('fast');
 		}
-		
+
 		base.init();
 	};
-	
+
 	$.jWindowCrop.defaultOptions = {
 		targetWidth: 320,
 		targetHeight: 180,
@@ -164,17 +179,18 @@
 		loadingText: 'Loading...',
 		smartControls: true,
 		showControlsOnStart: true,
+		initX: 'auto',
+		initY: 'auto',
 		onChange: function() {}
 	};
-	
+
 	$.fn.jWindowCrop = function(options){
 		return this.each(function(){
 			(new $.jWindowCrop(this, options));
 		});
 	};
-	
+
 	$.fn.getjWindowCrop = function(){
 		return this.data("jWindowCrop");
 	};
 })(jQuery);
-
