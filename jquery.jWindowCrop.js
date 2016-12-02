@@ -83,6 +83,9 @@
 			base.setZoom(base.workingPercent-zoomIncrement);
 			return false;
 		};
+		base.setFocus = function (x, y) {
+            base.$image.css({'left' : (x*-1*base.workingPercent.toString()+'px'), 'top' : (y*-1*base.workingPercent.toString()+'px')});
+        };
 
 		function initializeDimensions() {
 			if(base.originalWidth == 0) {
@@ -109,9 +112,13 @@
 			base.focalPoint = {'x': Math.round(x), 'y': Math.round(y)};
 		}
 		function focusOnCenter() {
-			var left = fillContainer((Math.round((base.focalPoint.x*base.workingPercent) - base.options.targetWidth/2)*-1), base.$image.width(), base.options.targetWidth);
-			var top = fillContainer((Math.round((base.focalPoint.y*base.workingPercent) - base.options.targetHeight/2)*-1), base.$image.height(), base.options.targetHeight);
-			base.$image.css({'left': (left.toString()+'px'), 'top': (top.toString()+'px')})
+			if ( typeof base.options.startX != null && typeof base.options.startY != null ) {
+                base.setFocus( base.options.startX, base.options.startY );
+            } else {
+                var left = fillContainer((Math.round((base.focalPoint.x*base.workingPercent) - base.options.targetWidth/2)*-1), base.$image.width(), base.options.targetWidth);
+                var top = fillContainer((Math.round((base.focalPoint.y*base.workingPercent) - base.options.targetHeight/2)*-1), base.$image.height(), base.options.targetHeight);
+                base.$image.css({'left': (left.toString()+'px'), 'top': (top.toString()+'px')});
+            }
 			storeFocalPoint();
 		}
 		function updateResult() {
