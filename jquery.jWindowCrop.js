@@ -48,11 +48,17 @@
 
 		base.destroy = function() {
 			base.$image.removeData("jWindowCrop"); // remove data
-			$(document).unbind(); // remove body binds
-			base.$image.unbind(); // remove image binds
-			base.$frame.unbind(); // remove frame binds
-			base.$frame.find('.jwc_zoom_out').unbind(); // remove zoom triggers
-			base.$frame.find('.jwc_zoom_in').unbind();  // remove zoom triggers
+			// remove frame handlers
+			base.$frame.off('mouseenter.' + base.namespace, handleMouseEnter);
+			base.$frame.off('mouseleave.' + base.namespace, handleMouseLeave);
+			// remove image handlers
+			base.$image.off('load.' + base.namespace, handleImageLoad);
+			base.$image.off('mousedown.' + base.namespace + ' touchstart.' + base.namespace, handleMouseDown);
+			// remove body handlers
+			$(document).off('mousemove.' + base.namespace + ' touchmove.' + base.namespace, handleMouseMove);
+			$(document).off('mouseup.' + base.namespace + ' touchend.' + base.namespace, handleMouseUp);
+			base.$frame.find('.jwc_zoom_in').off('click.' + base.namespace, base.zoomIn); // remove zoom triggers
+			base.$frame.find('.jwc_zoom_out').off('click.' + base.namespace, base.zoomOut); // remove zoom triggers
 			$('.jwc_loader').remove();   // remove the added text
 			$('.jwc_controls').remove(); // remove the added controls
 			base.$image.removeAttr( 'style' ); // undo the style
